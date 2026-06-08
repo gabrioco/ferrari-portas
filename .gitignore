@@ -1,11 +1,6 @@
 # Arquivos de documentação local (Claude Code)
 CLAUDE.md
-DESIGN.md
-CONVENTIONS.md
-ARCHITECTURE.md
-NOVO_PROJETO.md
-STACK.md
-PERFORMANCE.md
+docs/
 
 # Dependências
 node_modules/
