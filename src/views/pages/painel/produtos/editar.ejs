@@ -17,7 +17,7 @@
     </div>
 
     <div class="bg-white border border-neutral-200 rounded-sm p-8">
-      <form method="POST" action="/painel/produtos/<%= produto.id %>" class="space-y-6">
+      <form method="POST" action="/painel/produtos/<%= produto.id %>" enctype="multipart/form-data" class="space-y-6">
 
         <!-- Nome -->
         <div>
@@ -81,9 +81,9 @@
           </select>
         </div>
 
-        <!-- URL da imagem -->
+        <!-- Imagem -->
         <div>
-          <label class="mono text-[0.6rem] uppercase tracking-[0.2em] text-neutral-500 block mb-2">URL da imagem</label>
+          <label class="mono text-[0.6rem] uppercase tracking-[0.2em] text-neutral-500 block mb-2">Imagem</label>
           <% if (produto.imageUrl) { %>
             <div class="mb-3">
               <img
@@ -96,16 +96,15 @@
             </div>
           <% } %>
           <input
-            type="url"
-            name="imageUrl"
-            value="<%= produto.imageUrl || '' %>"
-            class="w-full border rounded-sm px-4 py-2.5 text-sm focus:outline-none transition-colors
-                   <%= typeof errors !== 'undefined' && errors.imageUrl ? 'border-red-300 bg-red-50' : 'border-neutral-200 focus:border-neutral-400' %>"
-            placeholder="https://..."
+            type="file"
+            name="imagem"
+            accept="image/*"
+            class="w-full border border-neutral-200 rounded-sm px-4 py-2 text-sm text-neutral-600
+                   file:mr-4 file:py-1.5 file:px-3 file:rounded-sm file:border-0
+                   file:text-xs file:font-medium file:bg-neutral-950 file:text-white
+                   hover:file:bg-neutral-800 cursor-pointer"
           />
-          <% if (typeof errors !== 'undefined' && errors.imageUrl) { %>
-            <p class="text-xs text-red-500 mt-1"><%= errors.imageUrl[0] %></p>
-          <% } %>
+          <p class="text-xs text-neutral-400 mt-1">Deixe em branco para manter a imagem atual.</p>
         </div>
 
         <!-- Ações -->

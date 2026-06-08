@@ -1,5 +1,6 @@
 import prisma from '../lib/prisma.js';
 import { produtoSchema } from '../schemas/produto.schema.js';
+import { uploadImagem } from '../lib/cloudinary.js';
 
 async function getCategorias() {
   return prisma.category.findMany({ orderBy: { name: 'asc' } });
@@ -40,9 +41,15 @@ export async function criaProduto(req, res, next) {
       });
     }
 
-    const { imageUrl, categoryId, ...rest } = result.data;
+    const { categoryId, ...rest } = result.data;
+
+    let imageUrl = null;
+    if (req.file) {
+      imageUrl = await uploadImagem(req.file.buffer, `produto-${Date.now()}`);
+    }
+
     await prisma.product.create({
-      data: { ...rest, imageUrl: imageUrl || null, categoryId: categoryId ?? null },
+      data: { ...rest, imageUrl, categoryId: categoryId ?? null },
     });
 
     res.redirect('/painel/produtos');
@@ -85,10 +92,19 @@ export async function atualizaProduto(req, res, next) {
       });
     }
 
-    const { imageUrl, categoryId, ...rest } = result.data;
+    const { categoryId, ...rest } = result.data;
+
+    let imageUrl;
+    if (req.file) {
+      imageUrl = await uploadImagem(req.file.buffer, `produto-${id}`);
+    } else {
+      const atual = await prisma.product.findUnique({ where: { id }, select: { imageUrl: true } });
+      imageUrl = atual?.imageUrl ?? null;
+    }
+
     await prisma.product.update({
       where: { id },
-      data:  { ...rest, imageUrl: imageUrl || null, categoryId: categoryId ?? null },
+      data:  { ...rest, imageUrl, categoryId: categoryId ?? null },
     });
 
     res.redirect('/painel/produtos');

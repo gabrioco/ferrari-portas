@@ -9,7 +9,7 @@ export const produtoSchema = z.object({
   name:        z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
   description: z.string().optional(),
   price:       precoField,
-  imageUrl:    z.string().url('URL de imagem inválida').optional().or(z.literal('')),
+  imageUrl:    z.string().optional().or(z.literal('')),
   categoryId:  z.preprocess(
     (v) => (v === '' || v === undefined || v === null ? undefined : Number(v)),
     z.number().int().positive().optional()
