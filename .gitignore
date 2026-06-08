@@ -1,0 +1,29 @@
+# Dependências
+node_modules/
+
+# Ambiente
+.env
+.env.local
+.env.production
+
+# Banco SQLite
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Prisma
+prisma/migrations/dev_*
+
+# Build Tailwind
+dist/
+public/dist/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp

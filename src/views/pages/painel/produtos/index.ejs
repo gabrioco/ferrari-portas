@@ -1,0 +1,135 @@
+<%- include('../../../partials/painel/shell-top', { title: 'Produtos', activePage: 'produtos', user }) %>
+
+  <!-- Header da seção -->
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <span class="mono text-[0.6rem] uppercase tracking-[0.2em] text-neutral-400 block mb-1">catálogo</span>
+      <h2 class="text-lg font-bold text-neutral-900">Produtos</h2>
+    </div>
+    <a href="/painel/produtos/novo"
+       class="inline-flex items-center gap-2 px-4 py-2 bg-neutral-950 text-white text-sm font-medium rounded-sm hover:bg-neutral-800 transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+      </svg>
+      Novo produto
+    </a>
+  </div>
+
+  <% if (produtos.length === 0) { %>
+    <!-- Estado vazio -->
+    <div class="bg-white border border-neutral-200 rounded-sm p-16 text-center">
+      <svg class="w-10 h-10 text-neutral-300 mx-auto mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+      </svg>
+      <p class="text-sm text-neutral-500 mb-4">Nenhum produto cadastrado ainda</p>
+      <a href="/painel/produtos/novo"
+         class="inline-flex items-center gap-2 px-4 py-2 bg-neutral-950 text-white text-sm font-medium rounded-sm hover:bg-neutral-800 transition-colors">
+        Cadastrar primeiro produto
+      </a>
+    </div>
+
+  <% } else { %>
+    <!-- Tabela -->
+    <div class="bg-white border border-neutral-200 rounded-sm overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-neutral-100">
+            <th class="text-left px-6 py-3">
+              <span class="mono text-[0.6rem] uppercase tracking-[0.2em] text-neutral-400">Produto</span>
+            </th>
+            <th class="text-left px-6 py-3 hidden md:table-cell">
+              <span class="mono text-[0.6rem] uppercase tracking-[0.2em] text-neutral-400">Categoria</span>
+            </th>
+            <th class="text-left px-6 py-3 hidden sm:table-cell">
+              <span class="mono text-[0.6rem] uppercase tracking-[0.2em] text-neutral-400">Preço</span>
+            </th>
+            <th class="text-left px-6 py-3">
+              <span class="mono text-[0.6rem] uppercase tracking-[0.2em] text-neutral-400">Status</span>
+            </th>
+            <th class="px-6 py-3"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-neutral-100">
+          <% produtos.forEach(function(produto) { %>
+            <tr class="hover:bg-neutral-50 transition-colors">
+
+              <!-- Nome + imagem -->
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <% if (produto.imageUrl) { %>
+                    <img
+                      src="<%= produto.imageUrl %>"
+                      alt="<%= produto.name %>"
+                      width="40" height="40"
+                      loading="lazy"
+                      class="w-10 h-10 rounded-sm object-cover bg-neutral-100 shrink-0"
+                    />
+                  <% } else { %>
+                    <div class="w-10 h-10 rounded-sm bg-neutral-100 flex items-center justify-center shrink-0">
+                      <svg class="w-5 h-5 text-neutral-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 3h18M3 21h18" />
+                      </svg>
+                    </div>
+                  <% } %>
+                  <div>
+                    <p class="font-medium text-neutral-900"><%= produto.name %></p>
+                    <% if (produto.description) { %>
+                      <p class="text-xs text-neutral-400 truncate max-w-[200px]"><%= produto.description %></p>
+                    <% } %>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Categoria -->
+              <td class="px-6 py-4 hidden md:table-cell">
+                <% if (produto.category) { %>
+                  <span class="mono text-[0.6rem] uppercase tracking-[0.15em] px-2 py-0.5 bg-neutral-100 text-neutral-500 rounded-sm">
+                    <%= produto.category.name %>
+                  </span>
+                <% } else { %>
+                  <span class="text-neutral-300">—</span>
+                <% } %>
+              </td>
+
+              <!-- Preço -->
+              <td class="px-6 py-4 hidden sm:table-cell">
+                <% if (produto.price !== null && produto.price !== undefined) { %>
+                  <span class="font-medium text-neutral-900">
+                    R$ <%= produto.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) %>
+                  </span>
+                <% } else { %>
+                  <span class="text-neutral-400">—</span>
+                <% } %>
+              </td>
+
+              <!-- Status -->
+              <td class="px-6 py-4">
+                <form method="POST" action="/painel/produtos/<%= produto.id %>/toggle">
+                  <button type="submit"
+                          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer
+                                 <%= produto.active ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100' : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200' %>">
+                    <span class="w-1.5 h-1.5 rounded-full <%= produto.active ? 'bg-emerald-500' : 'bg-neutral-400' %>"></span>
+                    <%= produto.active ? 'Ativo' : 'Inativo' %>
+                  </button>
+                </form>
+              </td>
+
+              <!-- Ações -->
+              <td class="px-6 py-4 text-right">
+                <a href="/painel/produtos/<%= produto.id %>/editar"
+                   class="inline-flex items-center gap-1 px-3 py-1.5 border border-neutral-200 text-neutral-600 text-xs font-medium rounded-sm hover:bg-neutral-50 transition-colors">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                  </svg>
+                  Editar
+                </a>
+              </td>
+
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+
+<%- include('../../../partials/painel/shell-bottom') %>

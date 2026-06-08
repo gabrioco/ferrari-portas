@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FRONTEND_REFERENCE — Design Repository</title>
+
+  <!-- FONT IMPORTS: ALL AVAILABLE PAIRS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Manrope:wght@300;400;500;600;700;800&family=Oswald:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500&family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* ============================================================
+       1. CSS CUSTOM PROPERTIES — 4 PALETTE THEMES
+    ============================================================ */
+
+    /* THEME A — DARK ABYSS (Gemini Monotone) */
+    .theme-abyss {
+      --bg:       #050505;
+      --bg-2:     #111111;
+      --bg-3:     #1a1a1a;
+      --text:     #e5e5e5;
+      --text-muted: #737373;
+      --border:   rgba(255,255,255,0.08);
+      --accent:   #ffffff;
+      --accent-2: #525252;
+    }
+
+    /* THEME B — DARK CREATIVE (Creative DS) */
+    .theme-dark-creative {
+      --bg:       #000000;
+      --bg-2:     #0a0a0a;
+      --bg-3:     #141414;
+      --text:     #ffffff;
+      --text-muted: #71717a;
+      --border:   rgba(255,255,255,0.08);
+      --accent:   #ef233c;
+      --accent-2: #be123c;
+    }
+
+    /* THEME C — STONE / CONCRETE (Aethereal) */
+    .theme-stone {
+      --bg:       #E3E1DC;
+      --bg-2:     #d6d4cf;
+      --bg-3:     #c9c7c2;
+      --text:     #121212;
+      --text-muted: #6b6b6b;
+      --border:   rgba(0,0,0,0.08);
+      --accent:   #374336;
+      --accent-2: #121212;
+    }
+
+    /* THEME D — CLEAN WHITE (Premium v4) */
+    .theme-white {
+      --bg:       #ffffff;
+      --bg-2:     #F5F5F0;
+      --bg-3:     #e8e8e3;
+      --text:     #1C1C1C;
+      --text-muted: #6B6B6B;
+      --border:   #E0E0E0;
+      --accent:   #1C1C1C;
+      --accent-2: #6B6B6B;
+    }
+
+    /* ============================================================
+       2. BASE & UTILITIES
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #0a0a0a;
+      color: #e5e5e5;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-bottom: 2rem;
+    }
+
+    .ref-block {
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .ref-block .tag {
+      position: absolute;
+      top: -0.65rem;
+      left: 1rem;
+      background: #0a0a0a;
+      padding: 0 0.5rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #ef233c;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem; }
+
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    }
+
+    /* ============================================================
+       3. BACKGROUNDS & SURFACES
+    ============================================================ */
+
+    /* Noise overlay */
+    .noise-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9000;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    }
+
+    /* CSS grid background */
+    .grid-bg {
+      background-size: 40px 40px;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+    }
+    .grid-bg-light {
+      background-size: 40px 40px;
+      background-image:
+        linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
+    }
+
+    /* Glass panel */
+    .glass-panel {
+      background: rgba(23, 23, 23, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .glass-panel-light {
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    /* Gradient blur (layered backdrop) */
+    .gradient-blur {
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 120px;
+      pointer-events: none;
+    }
+    .gradient-blur > div, .gradient-blur::before, .gradient-blur::after {
+      position: absolute; inset: 0;
+    }
+    .gradient-blur::before { content:""; backdrop-filter: blur(0.5px); mask: linear-gradient(to top,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 12.5%,rgba(0,0,0,1) 25%,rgba(0,0,0,0) 37.5%); }
+    .gradient-blur > div:nth-of-type(1) { backdrop-filter: blur(1px);  mask: linear-gradient(to top,rgba(0,0,0,0) 12.5%,rgba(0,0,0,1) 25%,rgba(0,0,0,1) 37.5%,rgba(0,0,0,0) 50%); }
+    .gradient-blur > div:nth-of-type(2) { backdrop-filter: blur(2px);  mask: linear-gradient(to top,rgba(0,0,0,0) 25%,rgba(0,0,0,1) 37.5%,rgba(0,0,0,1) 50%,rgba(0,0,0,0) 62.5%); }
+    .gradient-blur > div:nth-of-type(3) { backdrop-filter: blur(4px);  mask: linear-gradient(to top,rgba(0,0,0,0) 37.5%,rgba(0,0,0,1) 50%,rgba(0,0,0,1) 62.5%,rgba(0,0,0,0) 75%); }
+    .gradient-blur > div:nth-of-type(4) { backdrop-filter: blur(8px);  mask: linear-gradient(to top,rgba(0,0,0,0) 50%,rgba(0,0,0,1) 62.5%,rgba(0,0,0,1) 75%,rgba(0,0,0,0) 87.5%); }
+    .gradient-blur > div:nth-of-type(5) { backdrop-filter: blur(16px); mask: linear-gradient(to top,rgba(0,0,0,0) 62.5%,rgba(0,0,0,1) 75%,rgba(0,0,0,1) 87.5%,rgba(0,0,0,0) 100%); }
+    .gradient-blur > div:nth-of-type(6) { backdrop-filter: blur(32px); mask: linear-gradient(to top,rgba(0,0,0,0) 75%,rgba(0,0,0,1) 87.5%,rgba(0,0,0,1) 100%); }
+    .gradient-blur::after { content:""; backdrop-filter: blur(64px); mask: linear-gradient(to top,rgba(0,0,0,0) 87.5%,rgba(0,0,0,1) 100%); }
+
+    /* Border gradient via CSS mask */
+    [data-border-gradient]::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 1px;
+      border-radius: inherit;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      background: var(--border-gradient, linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0), rgba(255,255,255,0.2)));
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       4. ANIMATIONS — KEYFRAMES
+    ============================================================ */
+
+    /* A — Fade + slide + blur (fadeSlideIn) */
+    @keyframes fadeSlideIn {
+      0%   { opacity: 0; transform: translateY(30px); filter: blur(8px); }
+      100% { opacity: 1; transform: translateY(0);    filter: blur(0); }
+    }
+    .anim-fade-in { animation: fadeSlideIn 1s ease-out both; }
+    .anim-fade-in-delay-1 { animation: fadeSlideIn 1s ease-out 0.2s both; }
+    .anim-fade-in-delay-2 { animation: fadeSlideIn 1s ease-out 0.4s both; }
+    .anim-fade-in-delay-3 { animation: fadeSlideIn 1s ease-out 0.6s both; }
+    .anim-fade-in-delay-4 { animation: fadeSlideIn 1s ease-out 0.8s both; }
+
+    /* B — Text clip slide (textSlide) */
+    @keyframes textSlide {
+      0%   { transform: translateY(110%); opacity: 0; }
+      100% { transform: translateY(0);    opacity: 1; }
+    }
+    .text-clip-wrap { overflow: hidden; display: inline-block; }
+    .text-clip-inner { display: inline-block; animation: textSlide 0.9s cubic-bezier(0.16,1,0.3,1) forwards; opacity: 0; }
+    .text-clip-inner.delay-1 { animation-delay: 0.1s; }
+    .text-clip-inner.delay-2 { animation-delay: 0.25s; }
+    .text-clip-inner.delay-3 { animation-delay: 0.4s; }
+
+    /* C — Word reveal (GSAP-compatible) */
+    .word-wrap  { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.1em; }
+    .word-inner { display: inline-block; transform: translateY(110%); transition: transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+    .word-inner.revealed { transform: translateY(0); }
+
+    /* D — Reveal on scroll (IntersectionObserver) */
+    .reveal {
+      opacity: 0;
+      transform: translateY(2rem);
+      transition: all 1s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+
+    /* E — Shimmer */
+    @keyframes shimmer {
+      from { transform: translateX(-100%) skewX(-15deg); }
+      to   { transform: translateX(200%)  skewX(-15deg); }
+    }
+
+    /* F — Marquee */
+    @keyframes marquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee-container { display: flex; overflow: hidden; user-select: none; }
+    .marquee-content   { flex-shrink: 0; display: flex; justify-content: space-around; min-width: 100%; animation: marquee 40s linear infinite; }
+
+    /* G — Spin (conic border) */
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* ============================================================
+       5. BUTTONS
+    ============================================================ */
+
+    /* Button: Beam / Shimmer */
+    .btn-beam {
+      position: relative;
+      overflow: hidden;
+      background: #1c1c1c;
+      color: #fff;
+      border: none;
+      padding: 0.75rem 2rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn-beam::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+      transition: none;
+    }
+    .btn-beam:hover::before { animation: shimmer 0.6s ease forwards; }
+    .btn-beam:hover { background: #2a2a2a; }
+
+    /* Button: Conic spin border */
+    .btn-conic {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 2rem;
+      cursor: pointer;
+      outline: none;
+      border: none;
+      background: transparent;
+      color: #fff;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      overflow: hidden;
+      transition: transform 0.1s;
+    }
+    .btn-conic:active { transform: scale(0.97); }
+    .btn-conic .conic-spin {
+      position: absolute;
+      inset: -100%;
+      animation: spin 3s linear infinite;
+      background: conic-gradient(from 90deg at 50% 50%, transparent 0%, transparent 75%, #ef233c 100%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .btn-conic:hover .conic-spin { opacity: 1; }
+    .btn-conic .conic-bg   { position: absolute; inset: 0; background: #18181b; transition: opacity 0.3s; }
+    .btn-conic:hover .conic-bg { opacity: 0; }
+    .btn-conic .conic-fill { position: absolute; inset: 1px; background: #000; z-index: 1; }
+    .btn-conic .conic-label { position: relative; z-index: 2; }
+
+    /* Button: Radial glow (from dark creative) */
+    .btn-glow {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 180px;
+      height: 50px;
+      padding: 0 1.5rem;
+      cursor: pointer;
+      border: none;
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      overflow: hidden;
+      transition: transform 0.1s;
+    }
+    .btn-glow .glow-rest   { position: absolute; inset: 0; background: radial-gradient(15% 50% at 50% 100%, #fff 0%, transparent 100%); filter: blur(15px); transition: opacity 1.2s ease; }
+    .btn-glow .glow-hover  { position: absolute; inset: 0; background: radial-gradient(60% 50%  at 50% 100%, #fff 0%, transparent 100%); filter: blur(18px); opacity: 0; transition: opacity 1.2s ease; }
+    .btn-glow:hover .glow-rest  { opacity: 0; }
+    .btn-glow:hover .glow-hover { opacity: 1; }
+    .btn-glow .glow-fill   { position: absolute; inset: 1px; background: #000; z-index: 1; }
+    .btn-glow .glow-label  { position: relative; z-index: 2; }
+
+    /* Button: Ghost pill */
+    .btn-ghost-pill {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0.6rem 1.75rem;
+      border-radius: 9999px;
+      border: 1.5px solid currentColor;
+      background: transparent;
+      font-family: 'Manrope', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-ghost-pill:hover { background: currentColor; }
+    .btn-ghost-pill:hover span { color: #000; }
+
+    /* Button: Solid glow-on-hover */
+    .btn-solid {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0.75rem 2rem;
+      border-radius: 9999px;
+      background: #1c1c1c;
+      color: #fff;
+      border: none;
+      font-family: 'Manrope', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-solid:hover { background: #333; box-shadow: 0 0 30px rgba(28,28,28,0.4); transform: translateY(-2px); }
+
+    /* ============================================================
+       6. CARDS
+    ============================================================ */
+
+    /* Card: image + content split */
+    .card-split {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      background: #1a1a1a;
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+      height: 280px;
+    }
+    .card-split .card-content { padding: 2.5rem; display: flex; flex-direction: column; justify-content: space-between; }
+    .card-split .card-image   { overflow: hidden; position: relative; }
+    .card-split .card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.5s ease; }
+    .card-split:hover .card-image img { transform: scale(1.08); }
+    @media (max-width: 640px) { .card-split { grid-template-columns: 1fr; height: auto; } }
+
+    /* Card: flashlight */
+    .card-flashlight {
+      position: relative;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 2rem;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .card-flashlight::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(600px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.06), transparent 40%);
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+    }
+    .card-flashlight:hover::before { opacity: 1; }
+    .card-flashlight:hover { border-color: rgba(255,255,255,0.12); }
+
+    /* Card: glass */
+    .card-glass {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 2rem;
+    }
+
+    /* ============================================================
+       7. NAVIGATION PATTERNS
+    ============================================================ */
+
+    /* Nav: fixed glass pill */
+    .nav-glass-pill {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 0.5rem 1rem 0.5rem 1.25rem;
+      border-radius: 0;
+      max-width: 860px;
+      width: 100%;
+    }
+
+    /* Nav: frosted sticky */
+    .nav-frosted {
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid #E0E0E0;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Nav: mix-blend-difference */
+    .nav-blend {
+      position: fixed;
+      top: 0; width: 100%;
+      padding: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      mix-blend-mode: difference;
+      color: white;
+      z-index: 50;
+    }
+
+    /* ============================================================
+       8. FORM ELEMENTS
+    ============================================================ */
+
+    /* Floating label input */
+    .input-floating { position: relative; }
+    .input-floating input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      padding: 0.75rem 0;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .input-floating input:focus { border-color: #ef233c; }
+    .input-floating label {
+      position: absolute;
+      left: 0; top: 0.75rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #71717a;
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .input-floating input:focus ~ label,
+    .input-floating input:not(:placeholder-shown) ~ label {
+      top: -1.2rem;
+      font-size: 0.6rem;
+      color: #ef233c;
+    }
+
+    /* ============================================================
+       9. MISC COMPONENTS
+    ============================================================ */
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      font-family: 'Space Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.2em; text-transform: uppercase; color: #737373;
+    }
+    .scroll-indicator .dot {
+      width: 6px; height: 6px; border-radius: 50%; background: currentColor;
+      animation: bounce 1.5s ease-in-out infinite;
+    }
+    @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+    /* Live badge */
+    .badge-live {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 9999px;
+      padding: 0.35rem 0.75rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+      backdrop-filter: blur(8px);
+    }
+    .badge-live .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #ef233c;
+      box-shadow: 0 0 8px rgba(239,35,60,0.6);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* Preloader pattern */
+    .preloader {
+      position: fixed; inset: 0;
+      background: #000; z-index: 10000;
+      display: flex; justify-content: center; align-items: center; color: #fff;
+      transition: transform 1s cubic-bezier(0.76,0,0.24,1);
+    }
+    .preloader.hidden { transform: translateY(-100%); }
+    .preloader-text { font-family: 'Syncopate', sans-serif; font-size: 5vw; font-weight: 700; }
+    .preloader-bar  { position: absolute; bottom: 0; left: 0; height: 3px; background: #fff; width: 0%; transition: width 1.5s ease; }
+    .preloader-bar.done { width: 100%; }
+
+    /* Number/index label */
+    .index-label {
+      font-family: 'Syncopate', sans-serif;
+      font-size: 4rem; font-weight: 700;
+      opacity: 0.12; line-height: 1;
+    }
+
+    /* Section divider label */
+    .divider-label {
+      display: flex; align-items: center; gap: 1rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: #ef233c;
+    }
+    .divider-label::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
+
+    /* Gradient text */
+    .text-gradient-dark {
+      background: linear-gradient(135deg, #1C1C1C 0%, #6B6B6B 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .text-gradient-white {
+      background: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.5) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    /* ============================================================
+       REFERENCE DOC STYLES
+    ============================================================ */
+    .doc-header { border-bottom: 1px solid rgba(255,255,255,0.07); padding-bottom: 1.5rem; margin-bottom: 3rem; }
+    .doc-section { margin-bottom: 5rem; }
+    .swatch { aspect-ratio: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 1.2rem; border: 1px solid rgba(255,255,255,0.05); }
+    .swatch span { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; }
+    .font-pair { padding: 1.5rem; border: 1px solid rgba(255,255,255,0.07); }
+    .font-pair .display-sample { font-size: 2.5rem; line-height: 1; margin-bottom: 0.75rem; }
+    .font-pair .body-sample    { font-size: 0.875rem; line-height: 1.6; opacity: 0.6; margin-bottom: 1rem; }
+    .font-pair .meta           { font-family: 'Space Mono', monospace; font-size: 0.6rem; opacity: 0.35; letter-spacing: 0.1em; }
+  </style>
+</head>
+<body>
+
+  <!-- PRELOADER (DEMO) -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-text">LOADING</div>
+    <div class="preloader-bar" id="pbar"></div>
+  </div>
+
+  <main style="max-width: 1400px; margin: 0 auto; padding: 4rem 2rem;">
+
+    <!-- HEADER -->
+    <div class="doc-header">
+      <p class="section-label">Frontend Reference v1.0</p>
+      <h1 style="font-family:'Syncopate',sans-serif; font-size:clamp(1.5rem,4vw,3rem); font-weight:700; letter-spacing:-0.02em; line-height:1; margin-bottom:1rem;">DESIGN REPOSITORY</h1>
+      <p style="font-family:'Manrope',sans-serif; font-size:0.9rem; opacity:0.4; max-width:600px; line-height:1.7;">
+        Synthesis of refined frontend patterns — palettes, typography pairs, surfaces, animations, and components.
+        Reference this file in CLAUDE.md to ensure consistent, non-generic UI output.
+      </p>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         01 — COLOR PALETTES
+    ═══════════════════════════════════════════ -->
+    <section class="doc-section" id="palettes">
+      <div class="divider-label" style="margin-bottom:2rem;">01 — Color Palettes</div>
+
+      <!-- THEME A: DARK ABYSS -->
+      <p class="section-label">Theme A — Dark Abyss</p>
+      <div class="grid-4" style="margin-bottom:2.5rem;">
+        <div class="swatch" style="background:#050505;"><span style="color:#737373;">--bg</span><span style="color:#737373;">#050505</span></div>
+        <div class="swatch" style="background:#1a1a1a; border-color:rgba(255,255,255,0.1);"><span style="color:#737373;">--bg-3</span><span style="color:#737373;">#1a1a1a</span></div>
+        <div class="swatch" style="background:#e5e5e5;"><span style="color:#737373;">--text</span><span style="color:#737373;">#e5e5e5</span></div>
+        <div class="swatch" style="background:#ffffff;"><span style="color:#1c1c1c;">--accent</span><span style="color:#1c1c1c;">#ffffff</span></div>
+      </div>
+
+      <!-- THEME B: DARK CREATIVE -->
+      <p class="section-label">Theme B — Dark Creative (accent red)</p>
+      <div class="grid-4" style="margin-bottom:2.5rem;">
+        <div class="swatch" style="background:#000000; border-color:rgba(255,255,255,0.1);"><span style="color:#737373;">--bg</span><span style="color:#737373;">#000000</span></div>
+        <div class="swatch" style="background:#141414; border-color:rgba(255,255,255,0.1);"><span style="color:#737373;">--bg-3</span><span style="color:#737373;">#141414</span></div>
+        <div class="swatch" style="background:#71717a;"><span style="color:#fff;">--text-muted</span><span style="color:#fff;">#71717a</span></div>
+        <div class="swatch" style="background:#ef233c;"><span style="color:#fff;">--accent</span><span style="color:#fff;">#ef233c</span></div>
+      </div>
+
+      <!-- THEME C: STONE -->
+      <p class="section-label">Theme C — Stone / Concrete</p>
+      <div class="grid-4" style="margin-bottom:2.5rem;">
+        <div class="swatch" style="background:#E3E1DC; border-color:rgba(0,0,0,0.1);"><span style="color:#6b6b6b;">--bg</span><span style="color:#6b6b6b;">#E3E1DC</span></div>
+        <div class="swatch" style="background:#c9c7c2; border-color:rgba(0,0,0,0.1);"><span style="color:#6b6b6b;">--bg-3</span><span style="color:#6b6b6b;">#c9c7c2</span></div>
+        <div class="swatch" style="background:#121212;"><span style="color:#e5e5e5;">--text</span><span style="color:#e5e5e5;">#121212</span></div>
+        <div class="swatch" style="background:#374336;"><span style="color:#e5e5e5;">--accent (Deep Moss)</span><span style="color:#e5e5e5;">#374336</span></div>
+      </div>
+
+      <!-- THEME D: CLEAN WHITE -->
+      <p class="section-label">Theme D — Clean White</p>
+      <div class="grid-4" style="margin-bottom:1rem;">
+        <div class="swatch" style="background:#ffffff; border-color:#E0E0E0;"><span style="color:#6b6b6b;">--bg</span><span style="color:#6b6b6b;">#FFFFFF</span></div>
+        <div class="swatch" style="background:#F5F5F0; border-color:#E0E0E0;"><span style="color:#6b6b6b;">--bg-2</span><span style="color:#6b6b6b;">#F5F5F0</span></div>
+        <div class="swatch" style="background:#1C1C1C;"><span style="color:#e5e5e5;">--text</span><span style="color:#e5e5e5;">#1C1C1C</span></div>
+        <div class="swatch" style="background:#6B6B6B;"><span style="color:#fff;">--text-muted</span><span style="color:#fff;">#6B6B6B</span></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         02 — TYPOGRAPHY PAIRS
+    ═══════════════════════════════════════════ -->
+    <section class="doc-section" id="typography">
+      <div class="divider-label" style="margin-bottom:2rem;">02 — Typography Pairs</div>
+      <div class="grid-2">
+
+        <div class="font-pair">
+          <div class="display-sample" style="font-family:'Syncopate',sans-serif; font-weight:700; letter-spacing:-0.02em;">VOID HOUSE</div>
+          <div class="body-sample"    style="font-family:'Manrope',sans-serif;">Architecture that trusts the material to speak. Concrete, moss, and silence.</div>
+          <div class="meta">PAIR A — Syncopate 700 + Manrope 400 · Architectural / Studio</div>
+        </div>
+
+        <div class="font-pair">
+          <div class="display-sample" style="font-family:'Oswald',sans-serif; font-weight:600; letter-spacing:-0.01em;">SCALE YOUR DESIGN</div>
+          <div class="body-sample"    style="font-family:'Inter',sans-serif;">Explore typography, colors, components, and motion patterns used in this interface system.</div>
+          <div class="meta">PAIR B — Oswald 600 + Inter 400 · Editorial / Product</div>
+        </div>
+
+        <div class="font-pair">
+          <div class="display-sample" style="font-family:'Bricolage Grotesque',sans-serif; font-weight:700; letter-spacing:-0.03em;">Enhance with Motion</div>
+          <div class="body-sample"    style="font-family:'Geist Mono',monospace; font-size:0.8rem;">Monotone architecture. Precise physics. Pure neutral palette.</div>
+          <div class="meta">PAIR C — Bricolage Grotesque 700 + Geist Mono 400 · Tech / Dev</div>
+        </div>
+
+        <div class="font-pair">
+          <div class="display-sample" style="font-family:'Space Grotesk',sans-serif; font-weight:700; letter-spacing:-0.04em;">Digital Excellence</div>
+          <div class="body-sample"    style="font-family:'Manrope',sans-serif; font-weight:300;">Thoughts on the intersection of design, technology, and human psychology.</div>
+          <div class="meta">PAIR D — Space Grotesk 700 + Manrope 300 · Clean Premium</div>
+        </div>
+      </div>
+
+      <!-- Type scale reference -->
+      <div class="ref-block" style="margin-top:2rem;">
+        <span class="tag">Type Scale</span>
+        <div style="display:flex; flex-direction:column; gap:0.75rem; margin-top:0.5rem;">
+          <div style="font-family:'Syncopate',sans-serif; font-size:clamp(2rem,6vw,5rem); font-weight:700; line-height:1; letter-spacing:-0.02em;">Display / Hero</div>
+          <div style="font-family:'Syncopate',sans-serif; font-size:clamp(1.25rem,3vw,2.5rem); font-weight:700; line-height:1.1;">Section Heading</div>
+          <div style="font-family:'Manrope',sans-serif; font-size:1.25rem; font-weight:600; line-height:1.3;">Sub-heading / Card Title</div>
+          <div style="font-family:'Manrope',sans-serif; font-size:1rem; font-weight:400; line-height:1.6; opacity:0.7;">Body text — legible and calm. Used for descriptions, content, and supporting copy. Line height 1.6 minimum.</div>
+          <div style="font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; opacity:0.4;">Label / Tag / Section Index</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         03 — BACKGROUNDS & SURFACES
+    ═══════════════════════════════════════════ -->
+    <section class="doc-section" id="surfaces">
+      <div class="divider-label" style="margin-bottom:2rem;">03 — Backgrounds & Surfaces</div>
+      <div class="grid-2">
+
+        <div class="ref-block" style="min-height:160px; position:relative; overflow:hidden;">
+          <span class="tag">Noise Overlay</span>
+          <div class="noise-overlay" style="opacity:0.08;"></div>
+          <div style="font-family:'Manrope',sans-serif; opacity:0.5; font-size:0.8rem; margin-top:0.5rem;">SVG fractal noise at 4–8% opacity. Adds texture to flat surfaces. Apply as fixed overlay, z-index high, pointer-events:none.</div>
+        </div>
+
+        <div class="ref-block grid-bg" style="min-height:160px;">
+          <span class="tag">Grid Background</span>
+          <div style="font-family:'Manrope',sans-serif; opacity:0.5; font-size:0.8rem; margin-top:0.5rem;">CSS linear-gradient grid at 40px. Use .grid-bg (dark) or .grid-bg-light (light theme). Subtle structural depth.</div>
+        </div>
+
+        <div class="ref-block glass-panel" style="min-height:160px;">
+          <span class="tag">Glass Panel (Dark)</span>
+          <div style="font-family:'Manrope',sans-serif; opacity:0.7; font-size:0.8rem; margin-top:0.5rem;">rgba(23,23,23,0.6) + backdrop-filter:blur(20px). Essential for floating navs, modals, card overlays.</div>
+        </div>
+
+        <div class="ref-block" style="min-height:160px; background:rgba(255,255,255,0.04); backdrop-filter:blur(12px); border-color:rgba(255,255,255,0.06);">
+          <span class="tag">Glass Card (Dark Subtle)</span>
+          <div style="font-family:'Manrope',sans-serif; opacity:0.6; font-size:0.8rem; margin-top:0.5rem;">rgba(255,255,255,0.04) + blur(12px). Lighter glass for card surfaces. Pair with border rgba(255,255,255,0.06).</div>
+        </div>
+
+        <!-- Border gradient demo -->
+        <div class="ref-block" style="min-height:160px; position:relative;" data-border-gradient style="--border-gradient: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0), rgba(255,255,255,0.3));">
+          <span class="tag">Border Gradient (CSS Mask)</span>
+          <div style="font-family:'Manrope',sans-serif; opacity:0.5; font-size:0.8rem; margin-top:0.5rem;">Gradient border via CSS mask-composite. Add data-border-gradient attr and set --border-gradient CSS var. No extra element needed — uses ::before.</div>
+        </div>
+
+        <!-- Gradient blur demo -->
+        <div class="ref-block" style="min-height:160px; position:relative; overflow:hidden; background: linear-gradient(to bottom, #000, #1a1a1a);">
+          <span class="tag">Gradient Blur (Layered Backdrop)</span>
+          <div class="gradient-blur"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          <div style="font-family:'Manrope',sans-serif; opacity:0.5; font-size:0.8rem; padding-top:5rem;">6-layer backdrop-filter blur with gradient masks. Use for nav top bars — content scrolls through without hard line.</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         04 — ANIMATIONS (LIVE)
+    ═══════════════════════════════════════════ -->
+    <section class="doc-section" id="animations">
+      <div class="divider-label" style="margin-bottom:2rem;">04 — Animations (Live)</div>
+      <div class="grid-3">
+
+        <div class="ref-block">
+          <span class="tag">fadeSlideIn</span>
+          <div class="anim-fade-in" style="font-family:'Syncopate',sans-serif; font-size:1.5rem; font-weight:700; margin-top:0.5rem;">APPEAR</div>
+          <div class="anim-fade-in-delay-1" style="font-family:'Manrope',sans-serif; font-size:0.8rem; opacity:0.5;">translateY(30px) + blur(8px) → 0. General entrance for blocks, text, CTAs.</div>
+        </div>
+
+        <div class="ref-block">
+          <span class="tag">Text Clip Slide</span>
+          <div style="margin-top:0.5rem;">
+            <div class="text-clip-wrap"><span class="text-clip-inner" style="font-family:'Syncopate',sans-serif; font-size:1.5rem; font-weight:700;">REVEAL</span></div>
+          </div>
+          <div style="font-family:'Manrope',sans-serif; font-size:0.8rem; opacity:0.5; margin-top:0.5rem;">translateY(110%) → 0 inside overflow:hidden wrapper. Crisp masked text entrance. Stagger with delay-1/2/3.</div>
+        </div>
+
+        <div class="ref-block">
+          <span class="tag">Word Reveal (JS)</span>
+          <div id="word-reveal-demo" style="font-family:'Syncopate',sans-serif; font-size:1.25rem; font-weight:700; margin-top:0.5rem;">STRUCTURE AS SCULPTURE</div>
+          <div style="font-family:'Manrope',sans-serif; font-size:0.8rem; opacity:0.5; margin-top:0.5rem;">Split text into .word-wrap/.word-inner. Trigger via ScrollTrigger or IntersectionObserver. GSAP or CSS transition.</div>
+        </div>
+
+        <div class="ref-block">
+          <span class="tag">Marquee</span>
+          <div class="marquee-container" style="margin:1rem 0; font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.2em; color:#737373;">
+            <div class="marquee-content">
+              <span style="margin:0 2rem;">DESIGN SYSTEM</span><span style="margin:0 2rem;">·</span>
+              <span style="margin:0 2rem;">REFINED COMPONENTS</span><span style="margin:0 2rem;">·</span>
+              <span style="margin:0 2rem;">SMOOTH MOTION</span><span style="margin:0 2rem;">·</span>
+              <span style="margin:0 2rem;">PRODUCTION GRADE</span><span style="margin:0 2rem;">·</span>
+            </div>
+            <div class="marquee-content" aria-hidden="true">
+              <span style="margin:0 2rem;">DESIGN SYSTEM</span><span style="margin:0 2rem;">·</span>
+              <span style="margin:0 2rem;">REFINED COMPONENTS</span><span style="margin:0 2rem;">·</span>
+              <span style="margin:0 2rem;">SMOOTH MOTION</span><span style="margin:0 2rem;">·</span>
+              <span style="margin:0 2rem;">PRODUCTION GRADE</span><span style="margin:0 2rem;">·</span>
+            </div>
+          </div>
+          <div style="font-family:'Manrope',sans-serif; font-size:0.8rem; opacity:0.5;">Infinite scroll divider. Duplicate content for seamless loop. Speed via animation-duration.</div>
+        </div>
+
+        <div class="ref-block">
+          <span class="tag">Flashlight Card</span>
+          <div class="card-flashlight" style="margin-top:0.5rem;" onmousemove="trackMouse(event,this)">
+            <div style="font-family:'Manrope',sans-serif; font-size:0.875rem; opacity:0.6;">Move mouse over this card to see the radial glow follow cursor. Uses CSS --mx/--my custom properties updated via JS mousemove.</div>
+          </div>
+        </div>
+
+        <div class="ref-block">
+          <span class="tag">Gradient Text</span>
+          <div style="margin-top:0.5rem;">
+            <div class="text-gradient-white" style="font-family:'Syncopate',sans-serif; font-size:2rem; font-weight:700;">FADE DOWN</div>
+            <div class="text-gradient-dark"  style="font-family:'Syncopate',sans-serif; font-size:2rem; font-weight:700; margin-top:0.25rem;">FADE DOWN</div>
+          </div>
+          <div style="font-family:'Manrope',sans-serif; font-size:0.8rem; opacity:0.5; margin-top:0.5rem;">White-to-transparent on dark. Dark-to-gray on light. background-clip:text.</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         05 — BUTTONS
+    ═══════════════════════════════════════════ -->
+    <section class="doc-section" id="buttons">
+      <div class="divider-label" style="margin-bottom:2rem;">05 — Buttons</div>
+      <div class="grid-3" style="align-items:start;">
+
+        <div class="ref-block">
+          <span class="tag">Beam / Shimmer</span>
+          <div style="margin-top:1.5rem; display:flex; flex-direction:column; gap:1rem; align-items:flex-start;">
+            <button class="btn-beam">Get Started →</button>
+            <div style="font-family:'Manrope',sans-serif; font-size:0.75rem; opacity:0.4;">Hover: shimmer pass. Solid dark. No border. Best for dark backgrounds.</div>
+          </div>
+        </div>
+
+        <div class="ref-block">
+          <span class="tag">Conic Spin Border</span>
+          <div style="margin-top:1.5rem; display:flex; flex-direction:column; gap:1rem; align-items:flex-start;">
+            <button class="btn-conic">
+              <span class="conic-spin"></span>
+              <span class="conic-bg"></span>
+              <span class="conic-fill"></span>
+              <span class="conic-label">View Tokens →</span>
+            </button>
+            <div style="font-family:'Manrope',sans-serif; font-size:0.75rem; opacity:0.4;">Hover: spinning conic gradient border. Accent color on spin. Best on black/very dark.</div>
+          </div>
+        </div>
+
+        <div class="ref-block">
+          <span class="tag">Radial Glow</span>
+          <div style="margin-top:1.5rem; display:flex; flex-direction:column; gap:1rem; align-items:flex-start;">
+            <button class="btn-glow">
+              <span class="glow-rest"></span>
+              <span class="glow-hover"></span>
+              <span class="glow-fill"></span>
+              <span class="glow-label">Explore →</span>
+            </button>
+            <div style="font-family:'Manrope',sans-serif; font-size:0.75rem; opacity:0.4;">Radial glow at bottom edge, expands on hover. Refined, premium feel. Pairs with dark themes.</div>
+          </div>
+        </div>
+
+        <div class="ref-block">
+          <span class="tag">Ghost Pill</span>
+          <div style="margin-top:1.5rem; display:flex; flex-direction:column; gap:1rem; align-items:flex-start;">
+            <button class="btn-ghost-pill" style="color:#fff; border-color:rgba(255,255,255,0.3);"><span>View Documentation</span></button>
+            <div style="font-family:'Manrope',sans-serif; font-size:0.75rem; opacity:0.4;">Border only, fills on hover. Universal secondary CTA. Works on light and dark.</div>
+          </div>
+        </div>
+
+        <div class="ref-block">
+          <span class="tag">Solid Glow-on-Hover</span>
+          <div style="margin-top:1.5rem; display:flex; flex-direction:column; gap:1rem; align-items:flex-start;">
+            <button class="btn-solid">Explore Components →</button>
+            <div style="font-family:'Manrope',sans-serif; font-size:0.75rem; opacity:0.4;">Solid fill, lifts + glows on hover. Rounded pill. Best for light or neutral backgrounds.</div>
+          </div>
+        </div>
+
+        <div class="ref-block">
+          <span class="tag">Big Text Link</span>
+          <div style="margin-top:1.5rem;">
+            <a href="#" style="font-family:'Syncopate',sans-serif; font-size:1.75rem; font-weight:700; text-decoration:none; color:inherit; transition:opacity 0.2s; display:inline-block;" onmouseover="this.style.opacity=0.5" onmouseout="this.style.opacity=1">LET'S TALK</a>
+            <div style="font-family:'Manrope',sans-serif; font-size:0.75rem; opacity:0.4; margin-top:0.75rem;">Display-size text as CTA. Contact sections, footer CTAs. No button chrome — pure typography.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         06 — CARDS & COMPONENTS
+    ═══════════════════════════════════════════ -->
+    <section class="doc-section" id="components">
+      <div class="divider-label" style="margin-bottom:2rem;">06 — Cards & Components</div>
+
+      <!-- Card split -->
+      <div class="ref-block" style="margin-bottom:2rem;">
+        <span class="tag">Card: Image + Content Split</span>
+        <div class="card-split" style="margin-top:1.5rem;">
+          <div class="card-content">
+            <div>
+              <div class="index-label" style="color:#fff;">01</div>
+              <h3 style="font-family:'Syncopate',sans-serif; font-size:1.25rem; font-weight:700; color:#fff; margin-top:0.5rem;">VOID HOUSE</h3>
+              <p style="font-family:'Manrope',sans-serif; font-size:0.7rem; margin-top:0.5rem; opacity:0.5; letter-spacing:0.15em; text-transform:uppercase; color:#fff;">Kyoto, Japan</p>
+            </div>
+            <div style="font-family:'Manrope',sans-serif; font-size:0.85rem; opacity:0.5; color:#fff;">A minimal concrete residence focused on negative space and silence.</div>
+            <button style="font-family:'Space Mono',monospace; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; border:none; background:none; color:#fff; cursor:pointer; border-bottom:1px solid rgba(255,255,255,0.3); padding-bottom:0.25rem;">View Project</button>
+          </div>
+          <div class="card-image" style="background:linear-gradient(135deg,#1a1a1a,#2a2a2a); display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.1); font-family:'Syncopate',sans-serif; font-size:0.7rem; letter-spacing:0.2em;">IMAGE</div>
+        </div>
+      </div>
+
+      <!-- Misc components row -->
+      <div class="grid-3">
+        <div class="ref-block">
+          <span class="tag">Live Badge</span>
+          <div style="margin-top:1.5rem;">
+            <div class="badge-live"><span class="dot"></span><span>Living documentation</span></div>
+          </div>
+        </div>
+
+        <div class="ref-block">
+          <span class="tag">Floating Label Input</span>
+          <div class="input-floating" style="margin-top:1.5rem;">
+            <input type="email" id="email-demo" placeholder=" " />
+            <label for="email-demo">Email address</label>
+          </div>
+        </div>
+
+        <div class="ref-block">
+          <span class="tag">Scroll Indicator</span>
+          <div class="scroll-indicator" style="margin-top:1.5rem;">
+            <span>Scroll to Explore</span>
+            <span class="dot"></span>
+          </div>
+        </div>
+
+        <div class="ref-block">
+          <span class="tag">Section Divider Label</span>
+          <div class="divider-label" style="margin-top:1rem;">01 — Section Name</div>
+          <div class="divider-label" style="margin-top:1rem;">02 — Another Section</div>
+        </div>
+
+        <div class="ref-block">
+          <span class="tag">Index / Number Label</span>
+          <div style="margin-top:0.5rem;">
+            <div class="index-label">01</div>
+            <div style="font-family:'Manrope',sans-serif; font-size:0.8rem; opacity:0.4;">Large display number at low opacity. Section or card counter. Font: Syncopate.</div>
+          </div>
+        </div>
+
+        <div class="ref-block">
+          <span class="tag">Nav: Glass Pill</span>
+          <div class="nav-glass-pill" style="margin-top:1rem; position:relative;">
+            <span style="font-family:'Syncopate',sans-serif; font-size:0.7rem; font-weight:700;">LOGO</span>
+            <div style="display:flex; gap:1.5rem; font-family:'Space Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; opacity:0.5;">
+              <span>Work</span><span>About</span><span>Contact</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         07 — FONT IMPORTS (COPY-PASTE)
+    ═══════════════════════════════════════════ -->
+    <section class="doc-section" id="fonts">
+      <div class="divider-label" style="margin-bottom:2rem;">07 — Font Import Reference</div>
+      <div class="ref-block">
+        <span class="tag">Google Fonts — Full Import</span>
+        <pre style="font-family:'Space Mono',monospace; font-size:0.65rem; line-height:1.8; opacity:0.6; white-space:pre-wrap; margin-top:1rem;">
+&lt;!-- DISPLAY --&gt;
+Syncopate:wght@400;700          → Architectural, uppercase, geometric
+Oswald:wght@300;400;500;600;700 → Editorial, condensed, versatile
+Bricolage+Grotesque:wght@300..800 → Contemporary, expressive
+
+&lt;!-- BODY / UI --&gt;
+Manrope:wght@300;400;500;600;700;800 → Clean, modern, warm
+Inter:wght@300;400;500;600;700       → Neutral, UI-perfect
+Space+Grotesk:wght@300..700          → Geometric, distinctive
+
+&lt;!-- MONO --&gt;
+Space+Mono:wght@400;700   → Labels, tags, code
+Geist+Mono:wght@400;500   → Dev-adjacent, minimal
+
+&lt;!-- RECOMMENDED PAIRS --&gt;
+Syncopate + Manrope         → Studio / Portfolio / Architecture
+Oswald + Inter              → Editorial / Product / Corporate
+Bricolage Grotesque + Geist Mono → Tech / SaaS / Dev tools
+Space Grotesk + Manrope     → Clean Premium / Agency
+        </pre>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         08 — USAGE RULES (FOR CLAUDE CODE)
+    ═══════════════════════════════════════════ -->
+    <section class="doc-section" id="rules">
+      <div class="divider-label" style="margin-bottom:2rem;">08 — Usage Rules for Claude Code</div>
+      <div class="ref-block">
+        <span class="tag">Non-negotiable</span>
+        <ul style="font-family:'Manrope',sans-serif; font-size:0.875rem; line-height:2; opacity:0.7; list-style:none; margin-top:1rem;">
+          <li>→ Always use CSS custom properties (--bg, --text, --accent) for theming. Never hardcode hex directly in components.</li>
+          <li>→ Never default to Arial, Roboto, or system fonts. Always pick from the pairs above.</li>
+          <li>→ Never use purple gradients on white — it is the most overused AI-generated aesthetic.</li>
+          <li>→ All entrance animations must use either fadeSlideIn or textSlide keyframes. No generic opacity fades alone.</li>
+          <li>→ Card borders: rgba(255,255,255,0.08) on dark, rgba(0,0,0,0.08) on light. Never solid 1px #ccc.</li>
+          <li>→ Typography labels/tags: Space Mono, uppercase, letter-spacing 0.2em, opacity 0.4. Always.</li>
+          <li>→ Buttons must have at least one micro-interaction (shimmer, glow, conic, lift). No flat hover:bg only.</li>
+          <li>→ When in doubt between light and dark: default to dark. Stone/Concrete (Theme C) for warmer projects.</li>
+          <li>→ Section index numbers (01, 02, 03) use Syncopate at large size, low opacity. Always.</li>
+          <li>→ No layout should feel symmetrical and safe. Use asymmetric grids, 1fr 1.2fr splits, col-span offsets.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="border-top:1px solid rgba(255,255,255,0.07); padding-top:2rem; padding-bottom:4rem;">
+      <p style="font-family:'Space Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; opacity:0.25; text-align:center;">
+        FRONTEND_REFERENCE v1.0 — Reference this file in CLAUDE.md
+      </p>
+    </footer>
+
+  </main>
+
+  <script>
+    // --- PRELOADER ---
+    const pbar = document.getElementById('pbar');
+    const preloader = document.getElementById('preloader');
+    setTimeout(() => { pbar.style.width = '100%'; }, 100);
+    setTimeout(() => {
+      preloader.style.transform = 'translateY(-100%)';
+      preloader.style.transition = 'transform 1s cubic-bezier(0.76,0,0.24,1)';
+    }, 1800);
+
+    // --- WORD REVEAL DEMO ---
+    function splitToWords(el) {
+      const words = el.innerText.split(' ');
+      el.innerHTML = words.map(w =>
+        `<span class="word-wrap"><span class="word-inner">${w}&nbsp;</span></span>`
+      ).join('');
+    }
+    const wrd = document.getElementById('word-reveal-demo');
+    splitToWords(wrd);
+    setTimeout(() => {
+      wrd.querySelectorAll('.word-inner').forEach((el, i) => {
+        setTimeout(() => el.classList.add('revealed'), i * 80);
+      });
+    }, 2200);
+
+    // --- FLASHLIGHT CARD ---
+    function trackMouse(e, el) {
+      const rect = el.getBoundingClientRect();
+      el.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
+      el.style.setProperty('--my', (e.clientY - rect.top)  + 'px');
+    }
+
+    // --- REVEAL ON SCROLL ---
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('active'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

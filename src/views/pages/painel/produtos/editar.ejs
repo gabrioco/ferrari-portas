@@ -1,0 +1,129 @@
+<%- include('../../../partials/painel/shell-top', { title: 'Editar produto', activePage: 'produtos', user }) %>
+
+  <!-- Back -->
+  <a href="/painel/produtos"
+     class="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-neutral-800 transition-colors mb-6">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+    </svg>
+    Voltar para produtos
+  </a>
+
+  <div class="max-w-xl">
+
+    <div class="mb-6">
+      <span class="mono text-[0.6rem] uppercase tracking-[0.2em] text-neutral-400 block mb-1">catálogo</span>
+      <h2 class="text-lg font-bold text-neutral-900">Editar produto</h2>
+    </div>
+
+    <div class="bg-white border border-neutral-200 rounded-sm p-8">
+      <form method="POST" action="/painel/produtos/<%= produto.id %>" class="space-y-6">
+
+        <!-- Nome -->
+        <div>
+          <label class="mono text-[0.6rem] uppercase tracking-[0.2em] text-neutral-500 block mb-2">
+            Nome <span class="text-red-400">*</span>
+          </label>
+          <input
+            type="text"
+            name="name"
+            required
+            value="<%= produto.name %>"
+            class="w-full border rounded-sm px-4 py-2.5 text-sm focus:outline-none transition-colors
+                   <%= typeof errors !== 'undefined' && errors.name ? 'border-red-300 bg-red-50' : 'border-neutral-200 focus:border-neutral-400' %>"
+          />
+          <% if (typeof errors !== 'undefined' && errors.name) { %>
+            <p class="text-xs text-red-500 mt-1"><%= errors.name[0] %></p>
+          <% } %>
+        </div>
+
+        <!-- Descrição -->
+        <div>
+          <label class="mono text-[0.6rem] uppercase tracking-[0.2em] text-neutral-500 block mb-2">Descrição</label>
+          <textarea
+            name="description"
+            rows="3"
+            class="w-full border border-neutral-200 rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:border-neutral-400 transition-colors resize-none"
+          ><%= produto.description || '' %></textarea>
+        </div>
+
+        <!-- Preço -->
+        <div>
+          <label class="mono text-[0.6rem] uppercase tracking-[0.2em] text-neutral-500 block mb-2">Preço (R$)</label>
+          <input
+            type="number"
+            name="price"
+            min="0"
+            step="0.01"
+            value="<%= produto.price !== null && produto.price !== undefined ? produto.price : '' %>"
+            class="w-full border rounded-sm px-4 py-2.5 text-sm focus:outline-none transition-colors
+                   <%= typeof errors !== 'undefined' && errors.price ? 'border-red-300 bg-red-50' : 'border-neutral-200 focus:border-neutral-400' %>"
+            placeholder="0,00"
+          />
+          <% if (typeof errors !== 'undefined' && errors.price) { %>
+            <p class="text-xs text-red-500 mt-1"><%= errors.price[0] %></p>
+          <% } %>
+        </div>
+
+        <!-- Categoria -->
+        <div>
+          <label class="mono text-[0.6rem] uppercase tracking-[0.2em] text-neutral-500 block mb-2">Categoria</label>
+          <select
+            name="categoryId"
+            class="w-full border border-neutral-200 rounded-sm px-4 py-2.5 text-sm focus:outline-none focus:border-neutral-400 transition-colors bg-white">
+            <option value="">Sem categoria</option>
+            <% categorias.forEach(function(cat) { %>
+              <option value="<%= cat.id %>"
+                <%= produto.categoryId == cat.id ? 'selected' : '' %>>
+                <%= cat.name %>
+              </option>
+            <% }); %>
+          </select>
+        </div>
+
+        <!-- URL da imagem -->
+        <div>
+          <label class="mono text-[0.6rem] uppercase tracking-[0.2em] text-neutral-500 block mb-2">URL da imagem</label>
+          <% if (produto.imageUrl) { %>
+            <div class="mb-3">
+              <img
+                src="<%= produto.imageUrl %>"
+                alt="Imagem atual"
+                width="80" height="80"
+                loading="lazy"
+                class="w-20 h-20 rounded-sm object-cover bg-neutral-100"
+              />
+            </div>
+          <% } %>
+          <input
+            type="url"
+            name="imageUrl"
+            value="<%= produto.imageUrl || '' %>"
+            class="w-full border rounded-sm px-4 py-2.5 text-sm focus:outline-none transition-colors
+                   <%= typeof errors !== 'undefined' && errors.imageUrl ? 'border-red-300 bg-red-50' : 'border-neutral-200 focus:border-neutral-400' %>"
+            placeholder="https://..."
+          />
+          <% if (typeof errors !== 'undefined' && errors.imageUrl) { %>
+            <p class="text-xs text-red-500 mt-1"><%= errors.imageUrl[0] %></p>
+          <% } %>
+        </div>
+
+        <!-- Ações -->
+        <div class="flex items-center gap-3 pt-2">
+          <button
+            type="submit"
+            class="px-6 py-2.5 bg-neutral-950 text-white text-sm font-medium rounded-sm hover:bg-neutral-800 transition-colors">
+            Salvar alterações
+          </button>
+          <a href="/painel/produtos"
+             class="px-4 py-2.5 text-sm text-neutral-500 hover:text-neutral-800 transition-colors">
+            Cancelar
+          </a>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+
+<%- include('../../../partials/painel/shell-bottom') %>

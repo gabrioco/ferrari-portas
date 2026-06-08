@@ -1,0 +1,233 @@
+<%- include('../../../partials/painel/shell-top', { title: 'Categorias', activePage: 'categorias', user }) %>
+
+  <div class="max-w-2xl">
+
+    <!-- Cabeçalho -->
+    <div class="flex items-start justify-between mb-8">
+      <div>
+        <span class="mono text-[0.6rem] uppercase tracking-[0.2em] text-neutral-400 block mb-1">catálogo</span>
+        <h2 class="text-lg font-bold text-neutral-900">Categorias</h2>
+      </div>
+    </div>
+
+    <!-- Formulário: nova categoria -->
+    <div class="bg-white border border-neutral-200 rounded-sm p-6 mb-6">
+      <span class="mono text-[0.6rem] uppercase tracking-[0.2em] text-neutral-400 block mb-4">Nova categoria</span>
+
+      <form method="POST" action="/painel/categorias" class="flex items-start gap-3">
+        <div class="flex-1">
+          <input
+            type="text"
+            name="name"
+            required
+            value="<%= typeof values !== 'undefined' && values.name ? values.name : '' %>"
+            placeholder="Ex: Portas, Janelas, Divisórias..."
+            class="w-full border rounded-sm px-4 py-2.5 text-sm focus:outline-none transition-colors
+                   <%= typeof error !== 'undefined' && error ? 'border-red-300 bg-red-50' : 'border-neutral-200 focus:border-neutral-400' %>"
+          />
+          <% if (typeof error !== 'undefined' && error) { %>
+            <p class="text-xs text-red-500 mt-1"><%= error %></p>
+          <% } %>
+        </div>
+        <button type="submit"
+                class="shrink-0 px-4 py-2.5 bg-neutral-950 text-white text-sm font-medium rounded-sm hover:bg-neutral-800 transition-colors">
+          Adicionar
+        </button>
+      </form>
+    </div>
+
+    <!-- Lista de categorias -->
+    <% if (categorias.length === 0) { %>
+      <div class="bg-white border border-neutral-200 rounded-sm p-12 text-center">
+        <p class="text-sm text-neutral-400">Nenhuma categoria ainda. Crie a primeira acima.</p>
+      </div>
+
+    <% } else { %>
+      <div class="mb-2 flex items-center justify-between">
+        <p class="text-xs text-neutral-400">Arraste as linhas para reordenar. A ordem reflete na landing page.</p>
+        <span id="reorder-status" class="mono text-[0.58rem] uppercase tracking-[0.15em] text-neutral-400 hidden"></span>
+      </div>
+
+      <div class="bg-white border border-neutral-200 rounded-sm overflow-hidden">
+        <ul id="categorias-list" class="divide-y divide-neutral-100">
+          <% categorias.forEach(function(cat) { %>
+            <li class="cat-row flex items-center gap-4 px-5 py-3 transition-colors"
+                id="cat-row-<%= cat.id %>"
+                data-id="<%= cat.id %>">
+
+              <!-- Handle de arraste -->
+              <div class="drag-handle shrink-0 cursor-grab text-neutral-300 hover:text-neutral-500 transition-colors"
+                   title="Arrastar para reordenar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5"/>
+                </svg>
+              </div>
+
+              <!-- Nome (modo visualização) -->
+              <div class="flex-1 min-w-0" id="cat-view-<%= cat.id %>">
+                <span class="text-sm font-medium text-neutral-800"><%= cat.name %></span>
+                <span class="mono text-[0.58rem] uppercase tracking-[0.15em] text-neutral-400 ml-2">
+                  <%= cat._count.products %> produto<%= cat._count.products !== 1 ? 's' : '' %>
+                </span>
+              </div>
+
+              <!-- Formulário de edição (escondido por padrão) -->
+              <form method="POST" action="/painel/categorias/<%= cat.id %>"
+                    class="flex-1 hidden items-center gap-2" id="cat-edit-<%= cat.id %>">
+                <input
+                  type="text"
+                  name="name"
+                  value="<%= cat.name %>"
+                  required
+                  class="flex-1 border border-neutral-200 rounded-sm px-3 py-1.5 text-sm focus:outline-none focus:border-neutral-400 transition-colors"
+                />
+                <button type="submit"
+                        class="px-3 py-1.5 bg-neutral-950 text-white text-xs font-medium rounded-sm hover:bg-neutral-800 transition-colors">
+                  Salvar
+                </button>
+                <button type="button" onclick="cancelarEdicao(<%= cat.id %>)"
+                        class="px-3 py-1.5 text-xs text-neutral-500 hover:text-neutral-800 transition-colors">
+                  Cancelar
+                </button>
+              </form>
+
+              <!-- Ações -->
+              <div class="flex items-center gap-1 shrink-0" id="cat-actions-<%= cat.id %>">
+                <button onclick="iniciarEdicao(<%= cat.id %>)"
+                        class="p-1.5 rounded-sm text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors"
+                        title="Editar">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
+                  </svg>
+                </button>
+
+                <% if (cat._count.products === 0) { %>
+                  <form method="POST" action="/painel/categorias/<%= cat.id %>/delete"
+                        onsubmit="return confirm('Excluir categoria \'<%= cat.name %>\'?')">
+                    <button type="submit"
+                            class="p-1.5 rounded-sm text-neutral-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                            title="Excluir">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                      </svg>
+                    </button>
+                  </form>
+                <% } else { %>
+                  <span class="p-1.5 text-neutral-200 cursor-not-allowed" title="Categoria em uso">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                    </svg>
+                  </span>
+                <% } %>
+              </div>
+
+            </li>
+          <% }); %>
+        </ul>
+      </div>
+    <% } %>
+
+  </div>
+
+  <style>
+    .cat-row.drag-over { background: #f5f5f5; }
+    .cat-row.dragging  { opacity: 0.4; }
+    .drag-handle       { touch-action: none; }
+  </style>
+
+  <script>
+    /* ── Edição inline ── */
+    function iniciarEdicao(id) {
+      document.getElementById('cat-view-' + id).classList.add('hidden');
+      document.getElementById('cat-actions-' + id).classList.add('hidden');
+      const form = document.getElementById('cat-edit-' + id);
+      form.classList.remove('hidden');
+      form.classList.add('flex');
+      form.querySelector('input').focus();
+    }
+    function cancelarEdicao(id) {
+      document.getElementById('cat-view-' + id).classList.remove('hidden');
+      document.getElementById('cat-actions-' + id).classList.remove('hidden');
+      const form = document.getElementById('cat-edit-' + id);
+      form.classList.add('hidden');
+      form.classList.remove('flex');
+    }
+
+    /* ── Drag and drop ── */
+    (function () {
+      const list    = document.getElementById('categorias-list');
+      const status  = document.getElementById('reorder-status');
+      if (!list) return;
+
+      let dragged = null;
+
+      list.addEventListener('dragstart', (e) => {
+        dragged = e.target.closest('.cat-row');
+        if (!dragged) return;
+        dragged.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+
+      list.addEventListener('dragend', () => {
+        if (dragged) dragged.classList.remove('dragging');
+        list.querySelectorAll('.cat-row').forEach(r => r.classList.remove('drag-over'));
+        dragged = null;
+      });
+
+      list.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const over = e.target.closest('.cat-row');
+        if (!over || over === dragged) return;
+        list.querySelectorAll('.cat-row').forEach(r => r.classList.remove('drag-over'));
+        over.classList.add('drag-over');
+
+        const rect     = over.getBoundingClientRect();
+        const midpoint = rect.top + rect.height / 2;
+        if (e.clientY < midpoint) {
+          list.insertBefore(dragged, over);
+        } else {
+          list.insertBefore(dragged, over.nextSibling);
+        }
+      });
+
+      list.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        list.querySelectorAll('.cat-row').forEach(r => r.classList.remove('drag-over'));
+
+        const ids = [...list.querySelectorAll('.cat-row')].map(r => r.dataset.id);
+
+        setStatus('Salvando...', false);
+        try {
+          const res  = await fetch('/painel/categorias/reorder', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ ids }),
+          });
+          const json = await res.json();
+          setStatus(json.success ? 'Ordem salva' : 'Erro ao salvar', !json.success);
+        } catch {
+          setStatus('Erro ao salvar', true);
+        }
+      });
+
+      /* Habilita arrastar apenas pelo handle */
+      list.addEventListener('mousedown', (e) => {
+        const row = e.target.closest('.cat-row');
+        if (!row) return;
+        const handle = e.target.closest('.drag-handle');
+        row.draggable = !!handle;
+      });
+
+      function setStatus(msg, isError) {
+        status.textContent  = msg;
+        status.className    = 'mono text-[0.58rem] uppercase tracking-[0.15em] ' + (isError ? 'text-red-400' : 'text-emerald-600');
+        status.style.display = 'inline';
+        clearTimeout(status._t);
+        status._t = setTimeout(() => { status.style.display = 'none'; }, 2500);
+      }
+    })();
+  </script>
+
+<%- include('../../../partials/painel/shell-bottom') %>
