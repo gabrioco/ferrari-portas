@@ -348,6 +348,27 @@
   </footer>
 
 
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox" aria-modal="true" role="dialog" aria-label="Imagem do produto" hidden>
+    <div class="lightbox-backdrop"></div>
+    <div class="lightbox-panel">
+      <button class="lightbox-close" aria-label="Fechar">&times;</button>
+      <div class="lightbox-img-wrap">
+        <img id="lb-img" class="lightbox-img" src="" alt="" width="800" height="600" loading="lazy" />
+        <div id="lb-placeholder" class="lightbox-placeholder hidden">
+          <svg class="w-16 h-16 opacity-15" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909"/>
+          </svg>
+        </div>
+      </div>
+      <div class="lightbox-info">
+        <p id="lb-name" class="lightbox-name"></p>
+        <p id="lb-price" class="lightbox-price"></p>
+        <p id="lb-desc" class="lightbox-desc"></p>
+      </div>
+    </div>
+  </div>
+
   <script src="/src/main.js" defer></script>
 </body>
 </html>

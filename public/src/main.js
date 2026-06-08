@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchProdutos();
   initContatoForm();
   initFooterYear();
+  initLightbox();
 });
 
 /* ── Nav ── */
@@ -127,6 +128,66 @@ async function fetchProdutos() {
   }
 }
 
+/* ── Lightbox ── */
+function initLightbox() {
+  const lb       = document.getElementById('lightbox');
+  const backdrop = lb?.querySelector('.lightbox-backdrop');
+  const closeBtn = lb?.querySelector('.lightbox-close');
+  if (!lb) return;
+
+  document.addEventListener('click', (e) => {
+    const card = e.target.closest('.carousel-card');
+    if (!card) return;
+    const produto = JSON.parse(card.dataset.product || '{}');
+    abreLightbox(produto);
+  });
+
+  backdrop?.addEventListener('click', fechaLightbox);
+  closeBtn?.addEventListener('click', fechaLightbox);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') fechaLightbox();
+  });
+
+  function abreLightbox(produto) {
+    const img         = document.getElementById('lb-img');
+    const placeholder = document.getElementById('lb-placeholder');
+    const nameEl      = document.getElementById('lb-name');
+    const priceEl     = document.getElementById('lb-price');
+    const descEl      = document.getElementById('lb-desc');
+
+    if (produto.imageUrl) {
+      img.src = produto.imageUrl;
+      img.alt = produto.name || '';
+      img.classList.remove('hidden');
+      placeholder?.classList.add('hidden');
+    } else {
+      img.src = '';
+      img.classList.add('hidden');
+      placeholder?.classList.remove('hidden');
+    }
+
+    nameEl.textContent  = produto.name || '';
+    priceEl.textContent = produto.price != null
+      ? `R$ ${Number(produto.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+      : '';
+    descEl.textContent  = produto.description || '';
+
+    lb.hidden = false;
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => lb.classList.add('lightbox-open'));
+  }
+
+  function fechaLightbox() {
+    lb.classList.remove('lightbox-open');
+    lb.classList.add('lightbox-closing');
+    lb.addEventListener('transitionend', () => {
+      lb.classList.remove('lightbox-closing');
+      lb.hidden = true;
+      document.body.style.overflow = '';
+    }, { once: true });
+  }
+}
+
 function buildCard(produto) {
   const preco = produto.price !== null && produto.price !== undefined
     ? `<span class="font-mono text-[0.75rem] tracking-[0.1em]" style="color:rgba(28,15,8,0.75);">
@@ -142,8 +203,15 @@ function buildCard(produto) {
          </svg>
        </div>`;
 
+  const productData = JSON.stringify({
+    name:        produto.name        || '',
+    price:       produto.price       ?? null,
+    description: produto.description || '',
+    imageUrl:    produto.imageUrl    || '',
+  }).replace(/"/g, '&quot;');
+
   return `
-    <div class="carousel-card card-flashlight">
+    <div class="carousel-card card-flashlight" data-product="${productData}">
       <div class="card-img">${imgHtml}</div>
       <div class="card-body">
         <h4 class="font-display font-bold text-[#1C0F08] text-[1.05rem] tracking-tight leading-snug mb-2">
