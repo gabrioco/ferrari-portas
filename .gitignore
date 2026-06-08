@@ -1,13 +1,24 @@
+# Arquivos de documentação local (Claude Code)
+CLAUDE.md
+DESIGN.md
+CONVENTIONS.md
+ARCHITECTURE.md
+NOVO_PROJETO.md
+STACK.md
+PERFORMANCE.md
+
 # Dependências
 node_modules/
-
-# Ambiente
 .env
 .env.local
-.env.production
 
-# Banco SQLite
-*.db
+# Arquivos do sistema
+.DS_Store
+.vscode/
+.idea/
+
+# Banco de dados local
+database.db
 *.db-journal
 *.db-shm
 *.db-wal
@@ -15,15 +26,6 @@ node_modules/
 # Prisma
 prisma/migrations/dev_*
 
-# Build Tailwind
+# Build
 dist/
 public/dist/
-
-# Sistema
-.DS_Store
-Thumbs.db
-
-# Editor
-.vscode/
-.idea/
-*.swp
